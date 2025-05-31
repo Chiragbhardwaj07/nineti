@@ -1,5 +1,5 @@
 name: nineti
-description: "A new Flutter project."
+description: "Assignment for Internship."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -37,6 +37,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_easyloading: ^3.0.5
   go_router: ^15.1.2
+  http: ^1.4.0
+  equatable: ^2.0.7
+  custom_refresh_indicator: ^4.0.1
 
 dev_dependencies:
   flutter_test:

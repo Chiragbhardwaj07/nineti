@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nineti/features/user_management/bloc/user_details_bloc.dart';
+import 'package:nineti/features/user_management/domain/repository/user_repository.dart';
 import 'package:nineti/features/user_management/index.dart';
 
 
@@ -41,14 +44,27 @@ final GoRouter routes = GoRouter(
     // User detail screen
     GoRoute(
       path: '/user/:id',
-      builder: (BuildContext context, GoRouterState state) {
-        final userId = int.tryParse(state.pathParameters['id']!);
-        return UserDetailScreen(userId: userId!);
-      },
       pageBuilder: (context, state) {
-        final userId = int.tryParse(state.pathParameters['id']!);
-        return customTransition(
-            context: context, state: state, child: UserDetailScreen(userId: userId!));
+        final userId = int.parse(state.pathParameters['id']!);
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: BlocProvider<UserDetailBloc>(
+            create: (_) => UserDetailBloc(userRepository: UserRepository()),
+            child: UserDetailScreen(userId: userId),
+          ),
+          transitionDuration: const Duration(milliseconds: 500),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.linear;
+            final tween = Tween(begin: begin, end: end)
+                .chain(CurveTween(curve: curve));
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        );
       },
     ),
 
@@ -63,3 +79,4 @@ final GoRouter routes = GoRouter(
     ),
   ],
 );
+ 

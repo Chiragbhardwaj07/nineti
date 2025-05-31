@@ -1,17 +1,20 @@
 // lib/features/user_management/screens/user_list/widgets/user_tile.dart
 import 'package:flutter/material.dart';
 
-/// A small, reusable tile that displays a user’s avatar, name, and email.
+/// A reusable tile showing a user’s avatar, name, and email.
+/// Tapping it triggers the optional [onTap] callback.
 class UserTile extends StatelessWidget {
   final String name;
   final String email;
   final String avatarUrl;
+  final VoidCallback? onTap;
 
   const UserTile({
     super.key,
     required this.name,
     required this.email,
     required this.avatarUrl,
+    this.onTap,
   });
 
   @override
@@ -24,9 +27,7 @@ class UserTile extends StatelessWidget {
       title: Text(name),
       subtitle: Text(email),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      onTap: () {
-        // TODO: Navigator.pushNamed(context, '/user/${someId}');
-      },
+      onTap: onTap, // <-- this is where the callback gets invoked
     );
   }
 }
