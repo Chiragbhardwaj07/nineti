@@ -165,27 +165,25 @@ lib/
 
 ## 🖼️ Screenshots & GIFs
 
-Below are visual demonstrations. Replace the asset paths with your actual file names.
+**User List Screen (Light Theme)**  
+<img src="assets/images/user_list_light.jpeg" width="250" alt="User List Light" />
 
-**User List Screen (Light Theme)**
-![User List Light](assets/images/user_list_light.jpeg)
+**User List Screen (Dark Theme)**  
+<img src="assets/images/user_list_dark.jpeg" width="250" alt="User List Dark" />
 
-**User List Screen (Dark Theme)**
-![User List Dark](assets/images/user_list_dark.jpeg)
+**Pull-to-Refresh Warp Animation (Light & Dark)**  
+![Warp Refresh Light](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_light.gif)
+![Warp Refresh Dark](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_dark.gif)
 
-**Pull-to-Refresh Warp Animation**
-<p align="center">
-  <img src="assets/gifs/warp_refresh_light.gif" alt="Warp Refresh GIF" width="300">
-<img src="assets/gifs/warp_refresh_dark.gif" alt="Warp Refresh GIF" width="300">
-</p>
+<img src="assets/gifs/warp_refresh_dark.gif" width="250" alt="Warp Refresh Dark" />
 
-**User Detail Screen (Remote & Local Posts)**
-![User Detail with Local Post Light](assets/images/user_detail_light.jpeg)
-![User Detail with Local Post Dark](assets/images/user_detail_Dark.jpeg)
+**User Detail Screen (Remote & Local Posts, Light & Dark)**  
+<img src="assets/images/user_detail_light.jpeg" width="250" alt="User Detail Light" />  
+<img src="assets/images/user_detail_dark.jpeg" width="250" alt="User Detail Dark" />
 
-**Create Post Screen**
-![Create Post Screen Light](assets/images/create_new_post_light.jpeg)
-![Create Post Screen Dark](assets/images/create_new_post_dark.jpeg)
+**Create Post Screen (Light & Dark)**  
+<img src="assets/images/create_new_post_light.jpeg" width="250" alt="Create Post Light" />  
+<img src="assets/images/create_new_post_dark.jpeg" width="250" alt="Create Post Dark" /
 
 ---
 
