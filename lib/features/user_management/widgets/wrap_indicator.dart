@@ -21,6 +21,7 @@ class WarpIndicator extends StatefulWidget {
   final Color skyColor;
   final StarColorGetter starColorGetter;
   final Key? indicatorKey;
+  
 
   const WarpIndicator({
     super.key,
