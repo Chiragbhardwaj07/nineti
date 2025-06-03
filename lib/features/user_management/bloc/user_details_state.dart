@@ -1,4 +1,3 @@
-// lib/features/user_management/bloc/user_detail_state.dart
 import 'package:equatable/equatable.dart';
 import '../domain/models/user.dart';
 import '../domain/models/post.dart';
@@ -18,12 +17,6 @@ class UserDetailInitial extends UserDetailState {
 class UserDetailLoading extends UserDetailState {
   const UserDetailLoading();
 }
-
-/// On success, holds:
-/// - The user info (`user`)
-/// - The list of “remote” posts fetched from the API (`remotePosts`)
-/// - The list of “local” posts the user added (`localPosts`)
-/// - The list of todos (`todos`)
 class UserDetailLoaded extends UserDetailState {
   final User user;
   final List<Post> remotePosts;
@@ -39,8 +32,6 @@ class UserDetailLoaded extends UserDetailState {
 
   @override
   List<Object?> get props => [user, remotePosts, localPosts, todos];
-
-  /// Create a copy with an extra local post appended
   UserDetailLoaded copyWithAddedPost(Post newPost) {
     return UserDetailLoaded(
       user: user,

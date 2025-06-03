@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:nineti/app/app_theme_cubit.dart';
 import 'package:nineti/features/user_management/bloc/user_details_bloc.dart';
 import 'package:nineti/features/user_management/bloc/user_details_event.dart';
@@ -54,7 +55,24 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       body: BlocBuilder<UserDetailBloc, UserDetailState>(
         builder: (context, state) {
           if (state is UserDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: SizedBox(
+                height: 50,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.ballPulse,
+                
+                  /// Required, The loading type of the widget
+                  colors: isDarkMode
+                      ? [Colors.white.withOpacity(0.8)]
+                      : [Colors.blueAccent.shade100],
+                
+                  /// Optional, The color collections
+                  strokeWidth: 2,
+                
+                  /// Optional, the stroke backgroundColor
+                ),
+              ),
+            );
           }
           if (state is UserDetailError) {
             return Center(child: Text('Error: ${state.message}'));
@@ -71,7 +89,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           return const SizedBox.shrink();
         },
       ),
-      
     );
   }
 
@@ -83,7 +100,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     List<Todo> todos,
   ) {
     final isDarkMode = context.watch<ThemeCubit>().state == ThemeMode.dark;
-    // Combine remote + local posts (we’ll show local posts above remote ones)
     final allPosts = <Post>[...localPosts, ...remotePosts];
 
     return SingleChildScrollView(
@@ -102,7 +118,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Posts",
@@ -112,22 +129,26 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                     ),
                   ),
                   GestureDetector(
-                    
                     onTap: () {
-                       // First, get the existing UserDetailBloc
-          final detailBloc = context.read<UserDetailBloc>();
-
-          // Navigate manually, passing the bloc as a value
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BlocProvider.value(
-                value: detailBloc,
-                child: CreatePostScreen(userId: widget.userId),
-              ),
-            ),
-          );
+                      final detailBloc = context.read<UserDetailBloc>();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: detailBloc,
+                            child: CreatePostScreen(userId: widget.userId),
+                          ),
+                        ),
+                      );
                     },
-                    child: Text('Add New',style: TextStyle(fontWeight: FontWeight.w600, color: Colors.blue,fontSize: 16),))
+                    child: Text(
+                      'Add New',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -138,7 +159,20 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 child: Text('No posts available.'),
               )
             else
-              ...allPosts.map((p) => PostTile(post: p,backgroundColor: !isDarkMode?Colors.blue.shade50:Colors.black45,textColor: isDarkMode?Colors.white:Colors.black,borderColor: isDarkMode?Colors.black:Colors.blue.shade100,)).toList(),
+              ...allPosts
+                  .map(
+                    (p) => PostTile(
+                      post: p,
+                      backgroundColor: !isDarkMode
+                          ? Colors.blue.shade50
+                          : Colors.black45,
+                      textColor: isDarkMode ? Colors.white : Colors.black,
+                      borderColor: isDarkMode
+                          ? Colors.black
+                          : Colors.blue.shade100,
+                    ),
+                  )
+                  .toList(),
             const SizedBox(height: 24),
             _buildSectionTitle('Todos'),
             const SizedBox(height: 8),

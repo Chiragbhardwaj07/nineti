@@ -1,4 +1,3 @@
-// lib/features/user_management/screens/create_post/create_post_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nineti/app/app_theme_cubit.dart';
@@ -28,17 +27,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       final newPost = Post(
-        // Assign a negative or timestamp ID to avoid collision with remote IDs
         id: DateTime.now().millisecondsSinceEpoch,
         userId: widget.userId,
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
       );
-
-      // Dispatch AddLocalPost to the UserDetailBloc
       context.read<UserDetailBloc>().add(AddLocalPost(newPost));
-
-      // Pop back to the detail screen
       Navigator.of(context).pop();
     }
   }

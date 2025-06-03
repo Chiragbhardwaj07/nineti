@@ -16,7 +16,7 @@ class UserRepository {
 
   UserRepository({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Fetch paginated users. On success, cache into Hive; on failure, read from Hive.
+  /// Fetching paginated users. On success, caching into Hive; on failure, reading from Hive.
   Future<PaginatedUsers> fetchUsers({
     int limit = 20,
     int skip = 0,
@@ -52,7 +52,7 @@ class UserRepository {
           .map((u) => User.fromJson(u as Map<String, dynamic>))
           .toList();
 
-      // Cache each user individually by ID
+      // Caching each user individually by ID
       for (var user in users) {
         _usersBox.put(user.id, user);
       }
@@ -62,12 +62,12 @@ class UserRepository {
 
       return PaginatedUsers(users: users, hasMore: hasMore);
     } catch (_) {
-      // On error (e.g. no network), fallback to local cache:
+      // On error fallback to local cache:
       final allCached = _usersBox.values.toList();
       if (allCached.isEmpty) {
         rethrow; // no cached data either
       }
-      // Return “page” from cached list:
+      // Returning page from cached list:
       final start = skip;
       final end = skip + limit;
       final sliced = allCached.sublist(
@@ -78,7 +78,7 @@ class UserRepository {
     }
   }
 
-  /// Fetch a single user by ID. Cache on success; fallback to Hive on error.
+  /// Fetching a single user by ID. Caching on success; fallback to Hive on error.
   Future<User> fetchUserById(int userId) async {
     final Uri uri = Uri.parse(baseURL).replace(path: 'users/$userId');
     try {
@@ -99,7 +99,7 @@ class UserRepository {
     }
   }
 
-  /// Fetch posts for a user. Cache into Hive; fallback to Hive on error.
+  /// Fetching posts for a user. Caching into Hive; fallback to Hive on error.
   Future<List<Post>> fetchPostsForUser(int userId) async {
     final Uri uri = Uri.parse(baseURL).replace(path: 'posts/user/$userId');
 
@@ -128,7 +128,7 @@ class UserRepository {
     }
   }
 
-  /// Fetch todos for a user. Cache into Hive; fallback to Hive on error.
+  /// Fetching todos for a user. Caching into Hive; fallback to Hive on error.
   Future<List<Todo>> fetchTodosForUser(int userId) async {
     final Uri uri = Uri.parse(baseURL).replace(path: 'todos/user/$userId');
 

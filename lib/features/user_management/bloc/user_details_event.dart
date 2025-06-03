@@ -1,4 +1,3 @@
-// lib/features/user_management/bloc/user_detail_event.dart
 import 'package:equatable/equatable.dart';
 import '../domain/models/post.dart';
 
@@ -17,7 +16,6 @@ class FetchUserDetail extends UserDetailEvent {
   List<Object?> get props => [userId];
 }
 
-/// New event: add a post locally (title + body).
 class AddLocalPost extends UserDetailEvent {
   final Post post;
   const AddLocalPost(this.post);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:nineti/app/app_theme_cubit.dart';
 import 'package:nineti/features/user_management/bloc/user_list_bloc.dart';
 import 'package:nineti/features/user_management/bloc/user_list_event.dart';
@@ -22,19 +23,13 @@ class _UserListScreenState extends State<UserListScreen> {
   bool _isSearchActive = false;
   late final FocusNode _searchFocusNode;
 
-  Timer? _debounce; // For debouncing search input
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-
-    // 1) Trigger initial load
     context.read<UserListBloc>().add(const UserListFetchInitial());
-
-    // 2) Listen for infinite scroll
     _scrollController.addListener(_onScroll);
-
-    // 3) Listen to changes in the search field (optional: to clear search when tapping “X”)
     _searchController.addListener(_onSearchTextChanged);
     _searchFocusNode = FocusNode(canRequestFocus: false);
   }
@@ -59,25 +54,17 @@ class _UserListScreenState extends State<UserListScreen> {
     }
   }
 
-  /// Called when the text in the search field changes.
-  /// Implements a 500 ms debounce: when the user stops typing for half a second,
-  /// we dispatch a new search. If the field is empty, we revert to the full list.
   void _onSearchTextChanged() {
     final query = _searchController.text.trim();
-
-    // Cancel any existing debounce timer
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    // Start a new debounce timer
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (query.isEmpty) {
-        // If the search field is cleared, reload the full list
         context.read<UserListBloc>().add(const UserListFetchInitial());
       } else {
-        // Otherwise, dispatch a search event
         context.read<UserListBloc>().add(UserListSearch(query));
       }
-      // After firing the event, scroll back to top so the user sees results from the beginning
+
       _scrollController.animateTo(
         0,
         duration: const Duration(milliseconds: 300),
@@ -86,7 +73,6 @@ class _UserListScreenState extends State<UserListScreen> {
     });
   }
 
-  /// For pull-to-refresh
   Future<void> _onRefresh() async {
     final bloc = context.read<UserListBloc>();
     bloc.add(const UserListFetchInitial());
@@ -123,41 +109,48 @@ class _UserListScreenState extends State<UserListScreen> {
       ),
       body: GestureDetector(
         onTap: () {
-          // Dismiss keyboard when tapping outside the TextField
           FocusScope.of(context).unfocus();
           _isSearchActive = false;
-          _searchFocusNode.canRequestFocus =
-              false; // Prevent focus until tapped again
+          _searchFocusNode.canRequestFocus = false;
         },
         child: BlocBuilder<UserListBloc, UserListState>(
           builder: (context, state) {
-            // 1) FIRST LOAD (no users yet) → full-screen spinner
             if (state is UserListLoading && state.oldUsers.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return  Center(child: SizedBox(
+                height: 50,
+                child: LoadingIndicator(
+                              indicatorType: Indicator.ballPulse,
+                
+                              /// Required, The loading type of the widget
+                              colors: isDarkMode
+                                  ? [Colors.white.withOpacity(0.8)]
+                                  : [Colors.blueAccent.shade100],
+                
+                              /// Optional, The color collections
+                              strokeWidth: 2,
+                
+                              /// Optional, the stroke backgroundColor
+                            ),
+              ),);
             }
 
-            // 2) ERROR state
             if (state is UserListError) {
               return Center(child: Text('Error: ${state.message}'));
             }
-
-            // 3) LOADED / LOADING MORE / PULL-TO-REFRESH
             if (state is UserListLoaded || state is UserListLoading) {
               final users = (state is UserListLoaded)
                   ? state.users
                   : (state as UserListLoading).oldUsers;
               final hasMore = (state is UserListLoaded) ? state.hasMore : true;
 
-              // If there are absolutely no users after a load
               if (users.isEmpty && state is UserListLoaded) {
                 return const Center(child: Text('No users found.'));
               }
 
-              // Wrap the ListView in your WarpIndicator for pull-to-refresh
               return WarpIndicator(
                 starColorGetter: (index) => isDarkMode
                     ? Colors.white.withOpacity(0.8)
-                    : Colors.blueAccent.shade100, 
+                    : Colors.blueAccent.shade100,
                 onRefresh: _onRefresh,
                 skyColor: isDarkMode ? Colors.black45 : Colors.blue.shade50,
                 child: ListView.builder(
@@ -172,28 +165,40 @@ class _UserListScreenState extends State<UserListScreen> {
                         email: user.email,
                         avatarUrl: user.image,
                         onTap: () {
-                          // BEFORE navigating: dismiss focus and disable future auto-focus
                           _searchFocusNode.unfocus();
                           _isSearchActive = false;
                           _searchFocusNode.canRequestFocus = false;
 
-                          // THEN navigate
                           context.push('/user/${user.id}');
                         },
                       );
                     } else {
-                      // Show a “loading more” spinner at the bottom
-                      return const Padding(
+                      return  Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                          child:  SizedBox(
+                            height: 50,
+                            child: LoadingIndicator(
+                                indicatorType: Indicator.ballPulse,
+                                            
+                                /// Required, The loading type of the widget
+                                colors: isDarkMode
+                                    ? [Colors.white.withOpacity(0.8)]
+                                    : [Colors.blueAccent.shade100],
+                                            
+                                /// Optional, The color collections
+                                strokeWidth: 2,
+                                            
+                                /// Optional, the stroke backgroundColor
+                              ),
+                          ),
+                        ),
                       );
                     }
                   },
                 ),
               );
             }
-
-            // 4) FALLBACK (shouldn’t really happen)
             return const SizedBox.shrink();
           },
         ),
@@ -201,64 +206,59 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  /// Builds the search TextField inside the AppBar’s bottom area.
+  Widget _buildSearchBar(bool isDarkMode) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isSearchActive = true;
+          _searchFocusNode.canRequestFocus = true;
+        });
+        _searchFocusNode.requestFocus();
+      },
+      child: TextField(
+        controller: _searchController,
+        focusNode: _searchFocusNode,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: 'Search by name...',
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: _searchController.text.isEmpty
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
 
-Widget _buildSearchBar(bool isDarkMode) {
-  return GestureDetector(
-    onTap: () {
-      // Enable focus and open keyboard when tapped
-      setState(() {
-        _isSearchActive = true;
-        _searchFocusNode.canRequestFocus = true;
-      });
-      _searchFocusNode.requestFocus();
-    },
-    child: TextField(
-      controller: _searchController,
-      focusNode: _searchFocusNode,
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: 'Search by name...',
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: _searchController.text.isEmpty
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  // Clear the field
-                  _searchController.clear();
-    
-                  // Reload full user list
-                  context.read<UserListBloc>().add(const UserListFetchInitial());
-    
-                  // Dismiss keyboard & disable future focus until tapped
-                  _searchFocusNode.unfocus();
-                  setState(() {
-                    _isSearchActive = false;
-                    _searchFocusNode.canRequestFocus = false;
-                  });
-                },
-              ),
-        filled: true,
-        fillColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide.none,
+                    context.read<UserListBloc>().add(
+                      const UserListFetchInitial(),
+                    );
+
+                    _searchFocusNode.unfocus();
+                    setState(() {
+                      _isSearchActive = false;
+                      _searchFocusNode.canRequestFocus = false;
+                    });
+                  },
+                ),
+          filled: true,
+          fillColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 16,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide.none,
+          ),
         ),
+        onChanged: (_) {
+          setState(() {});
+        },
+        onSubmitted: (_) {
+          _searchFocusNode.unfocus();
+          setState(() => _isSearchActive = false);
+        },
       ),
-      onChanged: (_) {
-        // Rebuild to show/hide clear button as text changes
-        setState(() {});
-      },
-      onSubmitted: (_) {
-        // When the user presses “Search” on keyboard, you might want to unfocus:
-        _searchFocusNode.unfocus();
-        setState(() => _isSearchActive = false);
-      },
-    ),
-  );
+    );
+  }
 }
-
-}
- 

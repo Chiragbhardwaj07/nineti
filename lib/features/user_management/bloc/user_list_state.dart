@@ -1,4 +1,3 @@
-// lib/features/user_management/bloc/user_list_state.dart
 import 'package:equatable/equatable.dart';
 import '../domain/models/user.dart';
 
@@ -8,13 +7,10 @@ abstract class UserListState extends Equatable {
   @override
   List<Object?> get props => [];
 }
-
-/// Before any action.
 class UserListInitial extends UserListState {
   const UserListInitial();
 }
 
-/// While fetching data (either initial load or pagination).
 class UserListLoading extends UserListState {
   final List<User> oldUsers;
   final bool isFirstFetch;
@@ -25,10 +21,9 @@ class UserListLoading extends UserListState {
   List<Object?> get props => [oldUsers, isFirstFetch];
 }
 
-/// When data loaded successfully.
 class UserListLoaded extends UserListState {
   final List<User> users;
-  final bool hasMore; // whether more pages are available
+  final bool hasMore; 
 
   const UserListLoaded({required this.users, required this.hasMore});
 
@@ -36,7 +31,6 @@ class UserListLoaded extends UserListState {
   List<Object?> get props => [users, hasMore];
 }
 
-/// When an error occurs.
 class UserListError extends UserListState {
   final String message;
 
