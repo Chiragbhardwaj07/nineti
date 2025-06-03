@@ -68,15 +68,7 @@ final GoRouter routes = GoRouter(
       },
     ),
 
-    // Create post screen
-    GoRoute(
-      path: '/create_post',
-      builder: (BuildContext context, GoRouterState state) {
-        return const CreatePostScreen();
-      },
-      pageBuilder: (context, state) =>
-          customTransition(context: context, state: state, child: const CreatePostScreen()),
-    ),
+   
   ],
 );
  

@@ -6,6 +6,8 @@ import '../domain/models/user.dart';
 import '../domain/models/post.dart';
 import '../domain/models/todo.dart';
 import '../domain/repository/user_repository.dart';
+
+
 class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   final UserRepository _userRepository;
 
@@ -13,24 +15,38 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       : _userRepository = userRepository,
         super(const UserDetailInitial()) {
     on<FetchUserDetail>(_onFetchUserDetail);
+    on<AddLocalPost>(_onAddLocalPost);
   }
 
   Future<void> _onFetchUserDetail(
       FetchUserDetail event, Emitter<UserDetailState> emit) async {
     emit(const UserDetailLoading());
     try {
-      // 1) Fetch user info
       final User user = await _userRepository.fetchUserById(event.userId);
-      // 2) Fetch posts
-      final List<Post> posts =
+      final List<Post> remotePosts =
           await _userRepository.fetchPostsForUser(event.userId);
-      // 3) Fetch todos
       final List<Todo> todos =
           await _userRepository.fetchTodosForUser(event.userId);
 
-      emit(UserDetailLoaded(user: user, posts: posts, todos: todos));
+      emit(UserDetailLoaded(
+        user: user,
+        remotePosts: remotePosts,
+        localPosts: const [],
+        todos: todos,
+      ));
     } catch (e) {
       emit(UserDetailError(e.toString()));
     }
+  }
+
+  Future<void> _onAddLocalPost(
+      AddLocalPost event, Emitter<UserDetailState> emit) async {
+    final currentState = state;
+    if (currentState is UserDetailLoaded) {
+      // Create a new state with the new post appended to localPosts
+      final updatedState = currentState.copyWithAddedPost(event.post);
+      emit(updatedState);
+    }
+    // If not loaded yet, ignore.
   }
 }

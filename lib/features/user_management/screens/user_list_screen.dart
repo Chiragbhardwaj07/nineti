@@ -116,7 +116,7 @@ class _UserListScreenState extends State<UserListScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: _buildSearchBar(isDarkMode),
           ),
         ),
@@ -220,7 +220,6 @@ Widget _buildSearchBar(bool isDarkMode) {
       decoration: InputDecoration(
         hintText: 'Search by name...',
         prefixIcon: const Icon(Icons.search),
-        // Show clear button only when there is text:
         suffixIcon: _searchController.text.isEmpty
             ? null
             : IconButton(

@@ -1,6 +1,7 @@
 // lib/features/user_management/screens/user_detail/user_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nineti/app/app_theme_cubit.dart';
 import 'package:nineti/features/user_management/bloc/user_details_bloc.dart';
 import 'package:nineti/features/user_management/bloc/user_details_event.dart';
@@ -8,8 +9,11 @@ import 'package:nineti/features/user_management/bloc/user_details_state.dart';
 import 'package:nineti/features/user_management/domain/models/post.dart';
 import 'package:nineti/features/user_management/domain/models/todo.dart';
 import 'package:nineti/features/user_management/domain/models/user.dart';
+import 'package:nineti/features/user_management/screens/create_post_screen.dart';
 import 'package:nineti/features/user_management/widgets/post_tile.dart';
 import 'package:nineti/features/user_management/widgets/todo_tile.dart';
+
+
 
 class UserDetailScreen extends StatefulWidget {
   final int userId;
@@ -23,7 +27,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Dispatch the fetch event once the Bloc is available
     context.read<UserDetailBloc>().add(FetchUserDetail(widget.userId));
   }
 
@@ -34,7 +37,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Details'),
+        title: const Text('User Details'),
         actions: [
           IconButton(
             icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
@@ -48,24 +51,42 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           if (state is UserDetailLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is UserDetailError) {
             return Center(child: Text('Error: ${state.message}'));
           }
-
           if (state is UserDetailLoaded) {
-            return _buildDetailContent(context, state.user, state.posts, state.todos);
+            return _buildDetailContent(context, state.user, state.remotePosts, state.localPosts, state.todos);
           }
-
-          // Fallback if somehow in the initial state but no event sent
           return const SizedBox.shrink();
         },
       ),
+      // Floating action button to open CreatePostScreen
+      floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    // First, get the existing UserDetailBloc
+    final detailBloc = context.read<UserDetailBloc>();
+
+    // Navigate manually, passing the bloc as a value
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: detailBloc,
+          child: CreatePostScreen(userId: widget.userId),
+        ),
+      ),
+    );
+  },
+  child: const Icon(Icons.add),
+  tooltip: 'Create New Post',
+),
+
     );
   }
 
-  Widget _buildDetailContent(BuildContext context, User user, List<Post> posts,
-      List<Todo> todos) {
+  Widget _buildDetailContent(BuildContext context, User user, List<Post> remotePosts, List<Post> localPosts, List<Todo> todos) {
+    // Combine remote + local posts (we’ll show local posts above remote ones)
+    final allPosts = <Post>[...localPosts, ...remotePosts];
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -77,13 +98,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             const SizedBox(height: 24),
             _buildSectionTitle('Posts'),
             const SizedBox(height: 8),
-            if (posts.isEmpty)
+            if (allPosts.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text('No posts available.'),
               )
             else
-              ...posts.map((p) => PostTile(post: p)).toList(),
+              ...allPosts.map((p) => PostTile(post: p)).toList(),
             const SizedBox(height: 24),
             _buildSectionTitle('Todos'),
             const SizedBox(height: 8),
@@ -121,16 +142,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 children: [
                   Text(
                     user.fullName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    user.email,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  Text(user.email, style: const TextStyle(fontSize: 16)),
                   
                 ],
               ),
@@ -146,10 +161,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
       ),
     );
   }

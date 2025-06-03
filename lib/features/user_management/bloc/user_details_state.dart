@@ -11,33 +11,46 @@ abstract class UserDetailState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial, before any fetch.
 class UserDetailInitial extends UserDetailState {
   const UserDetailInitial();
 }
 
-/// Loading all data (user + posts + todos).
 class UserDetailLoading extends UserDetailState {
   const UserDetailLoading();
 }
 
-/// Loaded successfully: contains user info, posts list, todos list.
+/// On success, holds:
+/// - The user info (`user`)
+/// - The list of “remote” posts fetched from the API (`remotePosts`)
+/// - The list of “local” posts the user added (`localPosts`)
+/// - The list of todos (`todos`)
 class UserDetailLoaded extends UserDetailState {
   final User user;
-  final List<Post> posts;
+  final List<Post> remotePosts;
+  final List<Post> localPosts;
   final List<Todo> todos;
 
   const UserDetailLoaded({
     required this.user,
-    required this.posts,
+    required this.remotePosts,
+    this.localPosts = const [],
     required this.todos,
   });
 
   @override
-  List<Object?> get props => [user, posts, todos];
+  List<Object?> get props => [user, remotePosts, localPosts, todos];
+
+  /// Create a copy with an extra local post appended
+  UserDetailLoaded copyWithAddedPost(Post newPost) {
+    return UserDetailLoaded(
+      user: user,
+      remotePosts: remotePosts,
+      localPosts: List.of(localPosts)..add(newPost),
+      todos: todos,
+    );
+  }
 }
 
-/// Error state: failed to load something.
 class UserDetailError extends UserDetailState {
   final String message;
   const UserDetailError(this.message);
