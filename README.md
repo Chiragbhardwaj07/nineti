@@ -170,6 +170,9 @@ lib/
 ![Warp Refresh Light](https://github.com/Chiragbhardwaj07/nineti/blob/main/assets/gifs/warp_refresh_light.gif)
 ![Warp Refresh Dark](https://github.com/Chiragbhardwaj07/nineti/blob/main/assets/gifs/warp_refresh_dark.gif)
 ![Warp Refresh](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/main/assets/gifs/warp_refresh_light.gif)
+![warp_refresh_light](https://github.com/user-attachments/assets/b1ef8cee-8a03-416a-91db-e87b1c1d15ae)
+
+![warp_refresh_dark](https://github.com/user-attachments/assets/8fd47759-315e-4ea8-a45c-b3d65f3ff795)
 
 
 <img src="assets/gifs/warp_refresh_dark.gif" width="250" alt="Warp Refresh Dark" />
