@@ -1,5 +1,5 @@
 
-User Manager
+# User Manager
 
 A Flutter app that manages a list of users (from DummyJSON), supports search, infinite scrolling, pull-to-refresh with a custom warp-speed animation, dark/light theme toggle, user detail pages (with posts and todos), local “create post” functionality, and offline caching via Hive.
 
@@ -113,22 +113,17 @@ lib/
 │       │   │   └ todo.dart       # HiveType–annotated model
 │       │   └── repository/
 │       │       └ user_repository.dart  # API calls + Hive caching
-│       │
-│       └── screens/
-│           ├── user_list/
-│           │   ├ user_list_screen.dart
-│           │   └ widgets/
-│           │       ├ user_tile.dart
-│           │       └ warp_indicator.dart
-│           │
-│           ├── user_detail/
-│           │   ├ user_detail_screen.dart
-│           │   └ widgets/
-│           │       ├ post_tile.dart
-│           │       └ todo_tile.dart
-│           │
-│           └── create_post/
-│               └ create_post_screen.dart
+        |── screens/
+│       |   ├──  user_list_screen.dart
+│       |   ├──  user_detail_screen.dart
+│       |   └──  create_post_screen.dart
+│       | 
+│       └ widgets/
+│           ├ post_tile.dart
+            ├ tofo_tile.dart
+            ├ user_tile.dart
+│           └ warp_indicator.dart
+│       
 │
 └── main.dart
 ```
@@ -172,8 +167,8 @@ lib/
 <img src="assets/images/user_list_dark.jpeg" width="250" alt="User List Dark" />
 
 **Pull-to-Refresh Warp Animation (Light & Dark)**  
-![Warp Refresh Light](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_light.gif)
-![Warp Refresh Dark](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_dark.gif)
+![Warp Refresh Light](https://github.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_light.gif)
+![Warp Refresh Dark](https://github.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_dark.gif)
 
 <img src="assets/gifs/warp_refresh_dark.gif" width="250" alt="Warp Refresh Dark" />
 
@@ -183,7 +178,7 @@ lib/
 
 **Create Post Screen (Light & Dark)**  
 <img src="assets/images/create_new_post_light.jpeg" width="250" alt="Create Post Light" />  
-<img src="assets/images/create_new_post_dark.jpeg" width="250" alt="Create Post Dark" /
+<img src="assets/images/create_new_post_dark.jpeg" width="250" alt="Create Post Dark" />
 
 ---
 
