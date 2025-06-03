@@ -113,15 +113,15 @@ lib/
 │       │   │   └ todo.dart       # HiveType–annotated model
 │       │   └── repository/
 │       │       └ user_repository.dart  # API calls + Hive caching
-        |── screens/
+|       |── screens/
 │       |   ├──  user_list_screen.dart
 │       |   ├──  user_detail_screen.dart
 │       |   └──  create_post_screen.dart
 │       | 
 │       └ widgets/
 │           ├ post_tile.dart
-            ├ tofo_tile.dart
-            ├ user_tile.dart
+|           ├ tofo_tile.dart
+|           ├ user_tile.dart
 │           └ warp_indicator.dart
 │       
 │
@@ -167,8 +167,10 @@ lib/
 <img src="assets/images/user_list_dark.jpeg" width="250" alt="User List Dark" />
 
 **Pull-to-Refresh Warp Animation (Light & Dark)**  
-![Warp Refresh Light](https://github.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_light.gif)
-![Warp Refresh Dark](https://github.com/chiragbhardwaj07/nineti/assets/gifs/warp_refresh_dark.gif)
+![Warp Refresh Light](https://github.com/Chiragbhardwaj07/nineti/blob/main/assets/gifs/warp_refresh_light.gif)
+![Warp Refresh Dark](https://github.com/Chiragbhardwaj07/nineti/blob/main/assets/gifs/warp_refresh_dark.gif)
+![Warp Refresh](https://raw.githubusercontent.com/chiragbhardwaj07/nineti/main/assets/gifs/warp_refresh_light.gif)
+
 
 <img src="assets/gifs/warp_refresh_dark.gif" width="250" alt="Warp Refresh Dark" />
 
