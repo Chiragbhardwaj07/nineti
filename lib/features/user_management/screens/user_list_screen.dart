@@ -103,7 +103,7 @@ class _UserListScreenState extends State<UserListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: isDarkMode ? Colors.black : Colors.blue.shade100,
-        title: const Text('Users'),
+        title: const Text('User List'),
         actions: [
           IconButton(
             icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),

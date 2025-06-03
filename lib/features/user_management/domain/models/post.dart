@@ -1,10 +1,20 @@
-// lib/features/user_management/domain/models/post.dart
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'post.g.dart';
+
+@HiveType(typeId: 1)
 class Post extends Equatable {
+  @HiveField(0)
   final int id;
+
+  @HiveField(1)
   final int userId;
+
+  @HiveField(2)
   final String title;
+
+  @HiveField(3)
   final String body;
 
   const Post({

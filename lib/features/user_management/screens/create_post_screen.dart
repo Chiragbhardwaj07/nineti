@@ -1,6 +1,7 @@
 // lib/features/user_management/screens/create_post/create_post_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nineti/app/app_theme_cubit.dart';
 import 'package:nineti/features/user_management/bloc/user_details_bloc.dart';
 import 'package:nineti/features/user_management/bloc/user_details_event.dart';
 import 'package:nineti/features/user_management/domain/models/post.dart';
@@ -44,8 +45,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final themeCubit = context.read<ThemeCubit>();
+    final isDarkMode = context.watch<ThemeCubit>().state == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: isDarkMode ? Colors.black : Colors.blue.shade100,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text('Create New Post'),
       ),
       body: Padding(
@@ -78,8 +86,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isDarkMode ? Colors.black : Colors.blue.shade100,
+                  ),
                   onPressed: _onSubmit,
-                  child: const Text('Save Post'),
+                  child:  Text('Save Post',
+                    style: TextStyle(color: isDarkMode?Colors.white:Colors.black45, fontSize: 16),)
                 ),
               ),
             ],

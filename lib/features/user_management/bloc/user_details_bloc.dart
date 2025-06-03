@@ -1,5 +1,6 @@
 // lib/features/user_management/bloc/user_detail_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:nineti/features/user_management/bloc/user_details_event.dart';
 import 'package:nineti/features/user_management/bloc/user_details_state.dart';
 import '../domain/models/user.dart';
@@ -40,13 +41,18 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   Future<void> _onAddLocalPost(
-      AddLocalPost event, Emitter<UserDetailState> emit) async {
-    final currentState = state;
-    if (currentState is UserDetailLoaded) {
-      // Create a new state with the new post appended to localPosts
-      final updatedState = currentState.copyWithAddedPost(event.post);
-      emit(updatedState);
-    }
-    // If not loaded yet, ignore.
+    AddLocalPost event, Emitter<UserDetailState> emit) async {
+  final currentState = state;
+  if (currentState is UserDetailLoaded) {
+    // Create updated combined list (local + remote)
+    final updatedLocal = List<Post>.of(currentState.localPosts)..add(event.post);
+    // Optionally persist to Hive:
+    final allPosts = <Post>[...currentState.remotePosts, ...updatedLocal];
+    Hive.box<List>('postsBox').put('user_${currentState.user.id}', allPosts);
+
+    // Emit new state
+    emit(currentState.copyWithAddedPost(event.post));
   }
+}
+
 }

@@ -1,10 +1,20 @@
-// lib/features/user_management/domain/models/todo.dart
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'todo.g.dart';
+
+@HiveType(typeId: 2)
 class Todo extends Equatable {
+  @HiveField(0)
   final int id;
+
+  @HiveField(1)
   final int userId;
+
+  @HiveField(2)
   final String todo;
+
+  @HiveField(3)
   final bool completed;
 
   const Todo({
